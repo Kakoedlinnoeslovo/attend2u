@@ -116,18 +116,20 @@ def main(_):
       pool5 = g.get_operation_by_name('resnet_v1_101/pool5').outputs[0]
       pool5 = tf.transpose(pool5, perm=[0, 3, 1, 2])  # (batch_size, 2048, 1, 1)
 
-      with tf.Session() as sess:
+      config = tf.ConfigProto()
+      config.gpu_options.allow_growth = True
+      with tf.Session(config=config) as sess:
         init_fn(sess)
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord)
         try:
           for step in tqdm(
-              xrange(len(filenames) / FLAGS.batch_size + 1), ncols=70
+              range(len(filenames) / FLAGS.batch_size + 1), ncols=70
           ):
             if coord.should_stop():
               break
             file_names, pool5_value = sess.run([keys, pool5])
-            for i in xrange(len(file_names)):
+            for i in range(len(file_names)):
               np.save(
                   os.path.join(
                       FLAGS.output_dir,

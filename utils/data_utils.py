@@ -12,11 +12,11 @@ from scripts.generate_dataset import GO_ID, EOS_ID
 flags = tf.app.flags
 # Basic model parameters.
 flags.DEFINE_string("data_dir",
-    "./data/caption_dataset",
+    "data/caption_dataset",
     "data directory [data]"
 )
 flags.DEFINE_string("img_data_dir",
-    "./data/resnet_pool5_features",
+    "data/resnet_pool5_features",
     "data directory [data]"
 )
 

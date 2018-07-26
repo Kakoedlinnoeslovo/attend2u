@@ -9,7 +9,7 @@ pp = pprint.PrettyPrinter().pprint
 
 class BaseConfig(object):
   def __init__(self, FLAGS):
-    attrs = FLAGS.__dict__['__flags']
+    attrs = FLAGS.flag_values_dict()
     for attr in attrs:
       setattr(self, attr, getattr(FLAGS, attr))
 

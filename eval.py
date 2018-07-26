@@ -14,14 +14,14 @@ from utils.evaluator import Evaluator
 from termcolor import colored
 flags = tf.app.flags
 
-flags.DEFINE_string('eval_dir', './checkpoints/eval',
+flags.DEFINE_string('eval_dir', 'checkpoints/eval',
                            """Directory where to write event logs.""")
 flags.DEFINE_string('eval_data', 'test',
                            """Either 'test' or 'train_eval'.""")
-flags.DEFINE_string("train_dir", "./checkpoints", "checkpoint directory [checkpoints]")
+flags.DEFINE_string("train_dir", "checkpoints", "checkpoint directory [checkpoints]")
 flags.DEFINE_string(
     "vocab_fname",
-    "./data/caption_dataset/40000.vocab",
+    "data/caption_dataset/40000.vocab",
     "Vocabulary file for evaluation"
 )
 flags.DEFINE_integer("num_gpus", 4, "Number of gpus to use")
@@ -56,7 +56,7 @@ def _eval_once(saver, summary_writer, argmaxs, answer_ids, vocab, rev_vocab,
   """
   gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.95)
 
-  with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=False, gpu_options=gpu_options)) as sess:
+  with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)) as sess:
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     if ckpt and ckpt.model_checkpoint_path:
       # Restores from checkpoint
@@ -153,7 +153,7 @@ def evaluate():
     # Calculate the gradients for each model tower.
     with tf.variable_scope(tf.get_variable_scope()) as scope:
       for i in xrange(FLAGS.num_gpus):
-        with tf.device('/gpu:%d' % i):
+        with tf.device('/cpu:%d' % i):
           with tf.name_scope('%s_%d' % (TOWER_NAME, i)) as scope:
             inputs = [
                 tower_img_embedding[i],
